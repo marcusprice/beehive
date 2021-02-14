@@ -4,7 +4,11 @@ const { generateHash } = require('../../utils/encryption');
 const createNewUser = ({ email, password }) => {
   return new Promise((resolve, reject) => {
     user
-      .create({ email: email, password: generateHash(password) })
+      .create({
+        lookupValue: generateHash(email),
+        email: email,
+        password: generateHash(password),
+      })
       .then((result) => {
         delete result.dataValues['password'];
         resolve(result);

@@ -1,5 +1,10 @@
 const user = (sequelize, DataTypes) =>
   sequelize.define('User', {
+    lookupValue: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
