@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "repository": "https://github.com/marcusprice/beehive.git",
   "scripts": {
-    "test": "jest",
+    "dev": "nodemon ./src/index.js",
+    "test": "NODE_ENV=test jest --watchAll --runInBand",
     "init-dev-env": "./bin/init-dev-env.js",
     "sync-dev-db": "./bin/sync-dev-db.js"
   },
@@ -13,7 +14,8 @@
   "license": "MIT",
   "devDependencies": {
     "gulp": "^4.0.2",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
