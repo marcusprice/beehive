@@ -1,5 +1,6 @@
 const { createNewUser } = require('../../src/controllers/user');
-const { user } = require('../../src/models/db');
+const { db, user } = require('../../src/models/db');
+const { generateHash } = require('../../utils/encryption');
 const userData = {
   email: 'person@example.com',
   password: 'password69',
@@ -29,9 +30,21 @@ describe('user controller', () => {
     test('that the password is encrypted when new user is created', async () => {
       await user.sync({ force: true });
       await createNewUser(userData);
-      const newUser = await user.findAll({ where: { email: userData.email } });
+      const newUser = await user.findAll({
+        where: { lookupValue: generateHash(userData.email) },
+      });
 
       expect(newUser[0].dataValues.password.length).toBe(64);
     });
   });
 });
+
+//closes db after test suite process is closed
+const cleanup = () => {
+  db.close();
+};
+
+process.on('exit', cleanup);
+process.on('SIGINT', cleanup);
+process.on('SIGUSR1', cleanup);
+process.on('SIGUSR2', cleanup);

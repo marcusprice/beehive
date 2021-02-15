@@ -22,4 +22,5 @@ const db = new Sequelize(dbArgs.dbName, dbArgs.dbUsername, dbArgs.dbPassword, {
 
 const user = userModel(db, DataTypes);
 
+exports.db = db;
 exports.user = user;

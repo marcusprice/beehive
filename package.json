@@ -6,7 +6,7 @@
   "repository": "https://github.com/marcusprice/beehive.git",
   "scripts": {
     "dev": "nodemon ./src/index.js",
-    "test": "NODE_ENV=test jest --watchAll --runInBand",
+    "test": "NODE_ENV=test jest --watchAll --runInBand --verbose",
     "init-dev-env": "./bin/init-dev-env.js",
     "sync-dev-db": "./bin/sync-dev-db.js"
   },
