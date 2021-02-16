@@ -1,3 +1,11 @@
+/**
+ * @function user
+ *
+ * @param {object} sequelize - instance of sequelize
+ * @param {object} DataTypes - sequelize DataTypes object
+ * @returns {object} - user model object
+ */
+
 const user = (sequelize, DataTypes) =>
   sequelize.define('User', {
     lookupValue: {
