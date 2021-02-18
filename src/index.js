@@ -1,20 +1,31 @@
-const express = require('express');
-const server = express();
-const port = process.env.PORT || 5000;
-const { createNewUser } = require('./controllers/user');
+require('dotenv').config();
+const express = require('express'),
+  server = express(),
+  port = process.env.PORT || 5000,
+  helmet = require('helmet'),
+  session = require('express-session');
 
-//middleware for post requests
+// helmet middlware
+server.use(helmet());
+
+// middleware for post requests
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
-server.post('/createUser', async (req, res) => {
-  try {
-    const user = await createNewUser(req.body);
-    res.json(user);
-  } catch (error) {
-    res.json({ error: error.toString() });
-  }
-});
+// session middleware
+server.use(
+  session({
+    secret: process.env.SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+    },
+  })
+);
+
+// routes
+require('./routes/user')(server);
 
 server.listen(port, () => {
   console.log('server listneing on port ' + port);
