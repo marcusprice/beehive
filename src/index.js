@@ -3,7 +3,8 @@ const express = require('express'),
   server = express(),
   port = process.env.PORT || 5000,
   helmet = require('helmet'),
-  session = require('express-session');
+  session = require('express-session'),
+  { verifyLoginAttempts } = require('./middleware/auth');
 
 // helmet middlware
 server.use(helmet());
@@ -23,6 +24,9 @@ server.use(
     },
   })
 );
+
+// auth middleware
+server.use('/api/authenticate', verifyLoginAttempts);
 
 // routes
 require('./routes/user')(server);

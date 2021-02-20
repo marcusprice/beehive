@@ -6,6 +6,10 @@ const userData = {
   password: 'password69',
 };
 
+afterAll(() => {
+  db.close();
+});
+
 describe('user controller', () => {
   describe('createNewUser', () => {
     test('should throw an error if email aready exists in db', async () => {

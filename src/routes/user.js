@@ -18,6 +18,8 @@ module.exports = (server) => {
     try {
       const userData = await authenticateUser(email, password);
       jwt.sign({ userData }, process.env.JWT_SECRET_KEY, (error, token) => {
+        req.session.loginAttempts = 0;
+        req.session.currentLoginAttempts = 0;
         res.json({ token });
       });
     } catch (error) {
