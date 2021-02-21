@@ -1,3 +1,5 @@
+// src/middleware/auth.js
+
 const {
   minutesToMilliseconds,
   enoughTimePassed,
@@ -7,6 +9,22 @@ const {
 const bannedIPs = {};
 const bannedIpTime = minutesToMilliseconds(1440); // 24 hours
 const lockedOutTime = minutesToMilliseconds(15);
+
+/**
+ * @function verifyLoginAttempts
+ * @description This express middleware function monitors and manages current and overall login attempts.
+ * Users have up to 5 current attempts to sign in successfully before being blocked for a specified
+ * amount of time. Once that time is passed the current attempts will reset and they'll have another 5
+ * attempts before they are locked out again.
+ *
+ * The user has 100 overall attempts to sign in before their IP is banned for a specified amount of time.
+ *
+ * Both current and overall login attempts need to be reset to 0 when the user successfully signs in.
+ *
+ * @param {object} req - express request object
+ * @param {object} res - express response object
+ * @param {function} next - express next function
+ */
 
 const verifyLoginAttempts = (req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -53,10 +71,10 @@ const verifyLoginAttempts = (req, res, next) => {
     res.status(403).send('Forbidden: IP is banned');
   } else if (currentLoginAttempts > 5) {
     // temporarily block user access
-    const time = (req.session.lockedOut = {
+    req.session.lockedOut = {
       status: true,
       time: handleTime(req.session.lockedOut),
-    });
+    };
 
     res.status(403).send('Forbidden: Too many unsuccessful login attempts');
   } else {
