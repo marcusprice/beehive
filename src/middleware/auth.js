@@ -16,7 +16,7 @@ const verifyLoginAttempts = (req, res, next) => {
     bannedIPs[ip]?.status &&
     enoughTimePassed(bannedIPs[ip]?.time, bannedIpTime)
   ) {
-    req.session.loginAttempts = 0;
+    req.session.overallLoginAttempts = 0;
     bannedIPs[ip].status = false;
     bannedIPs[ip].time = null;
   }
@@ -33,20 +33,22 @@ const verifyLoginAttempts = (req, res, next) => {
   }
 
   // increment login attempts
-  req.session.loginAttempts = incrementLoginAttempt(req.session?.loginAttempts);
+  req.session.overallLoginAttempts = incrementLoginAttempt(
+    req.session?.overallLoginAttempts
+  );
 
   req.session.currentLoginAttempts = incrementLoginAttempt(
     req.session?.currentLoginAttempts
   );
 
-  const loginAttempts = req.session.loginAttempts;
+  const overallLoginAttempts = req.session.overallLoginAttempts;
   const currentLoginAttempts = req.session.currentLoginAttempts;
 
-  if (loginAttempts > 100 || bannedIPs[ip]) {
+  if (overallLoginAttempts > 100 || bannedIPs[ip]) {
     // more than 100 attempts, block IP address
     bannedIPs[ip] = {
       status: true,
-      time: handleTime(loginAttempts),
+      time: handleTime(overallLoginAttempts),
     };
     res.status(403).send('Forbidden: IP is banned');
   } else if (currentLoginAttempts > 5) {
