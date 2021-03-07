@@ -39,8 +39,9 @@ const enoughTimePassed = (time, lockedOutTime) => {
  * @function handleTime
  * @description handles whether to keep current time or generate new timestamp
  *
- * @param {number} time - the time to be checked
- * @returns {number} - returns time if it is defined, otherwise a new timestamp is returned
+ * @param {boolean} lockedOut - the user's lockedo out status
+ * @returns {number} - returns saved time if they are currently locked out, new
+ * timestamp if they are not
  */
 const handleTime = (lockedOut) =>
   lockedOut?.status ? lockedOut.time : new Date().getTime();

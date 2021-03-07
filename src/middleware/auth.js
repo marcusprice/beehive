@@ -82,4 +82,27 @@ const verifyLoginAttempts = (req, res, next) => {
   }
 }; //end of verifyLoginAttempts
 
+/**
+ * @function verifyToken
+ * @description express middleware function to verify and parse JWT in request header
+ *
+ * @param {object} req - express request object
+ * @param {object} res - express response object
+ * @param {function} next - express next function
+ */
+
+const verifyToken = (req, res, next) => {
+  const bearerHeader = req.headers['authorization'];
+
+  if (typeof bearerHeader !== 'undefined') {
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+};
+
 exports.verifyLoginAttempts = verifyLoginAttempts;
+exports.verifyToken = verifyToken;

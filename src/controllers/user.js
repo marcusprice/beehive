@@ -47,6 +47,42 @@ const getUser = (hashedEmail) => {
   });
 };
 
+const updateUser = (email, userData) => {
+  return new Promise((resolve, reject) => {
+    user
+      .update(
+        {
+          lookupValue: generateHash(userData.email),
+          email: encrypt(userData.email),
+          displayName: encrypt(userData.displayName),
+          firstName: encrypt(userData.firstName),
+          lastName: encrypt(userData.lastName),
+        },
+        {
+          where: {
+            lookupValue: generateHash(email),
+          },
+          returning: true,
+        }
+      )
+      .then((data) => {
+        data = data[1][0].dataValues;
+
+        updatedData = {
+          email: decrypt(data.email),
+          displayName: decrypt(data.displayName),
+          firstName: decrypt(data.firstName),
+          lastName: decrypt(data.lastName),
+        };
+        resolve(updatedData);
+      })
+      .catch((error) => {
+        console.log(error);
+        reject(error);
+      });
+  });
+};
+
 const authenticateUser = (email, password) => {
   const emailHashed = generateHash(email);
   const passwordHashed = generateHash(password);
@@ -78,4 +114,5 @@ const formatUserOutput = ({ email, displayName, firstName, lastName }) => {
 };
 
 exports.createNewUser = createNewUser;
+exports.updateUser = updateUser;
 exports.authenticateUser = authenticateUser;

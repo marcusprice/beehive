@@ -4,7 +4,7 @@ const express = require('express'),
   port = process.env.PORT || 5000,
   helmet = require('helmet'),
   session = require('express-session'),
-  { verifyLoginAttempts } = require('./middleware/auth');
+  { verifyLoginAttempts, verifyToken } = require('./middleware/auth');
 
 // helmet middlware
 server.use(helmet());
@@ -25,8 +25,11 @@ server.use(
   })
 );
 
-// auth middleware
+// login attempt middleware
 server.use('/api/authenticate', verifyLoginAttempts);
+// jwt middleware
+const jwtRoutes = ['/api/getUserData', '/api/updateUser'];
+server.use(jwtRoutes, verifyToken);
 
 // routes
 require('./routes/user')(server);
