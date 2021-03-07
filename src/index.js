@@ -28,7 +28,11 @@ server.use(
 // login attempt middleware
 server.use('/api/authenticate', verifyLoginAttempts);
 // jwt middleware
-const jwtRoutes = ['/api/getUserData', '/api/updateUser'];
+const jwtRoutes = [
+  '/api/getUserData',
+  '/api/updateUser',
+  '/api/changePassword',
+];
 server.use(jwtRoutes, verifyToken);
 
 // routes

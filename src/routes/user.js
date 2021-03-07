@@ -2,6 +2,7 @@ const {
     createNewUser,
     updateUser,
     authenticateUser,
+    changePassword,
   } = require('../controllers/user'),
   jwt = require('jsonwebtoken'),
   { signJWT, verifyJWT } = require('../../utils/jwt');
@@ -50,6 +51,20 @@ module.exports = (server) => {
       const token = await signJWT(updatedUserData, process.env.JWT_SECRET_KEY);
       res.json({ token });
     } catch (error) {
+      res.status(403).send('Forbidden');
+    }
+  });
+
+  server.post('/api/changePassword', async (req, res) => {
+    try {
+      const userData = await verifyJWT(req.token, process.env.JWT_SECRET_KEY);
+      const passwordUpdated = await changePassword(
+        userData.data.email,
+        req.body.newPassword
+      );
+      res.json({ passwordUpdated: passwordUpdated[0] === 1 });
+    } catch (error) {
+      //console.log(error);
       res.status(403).send('Forbidden');
     }
   });

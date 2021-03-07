@@ -83,6 +83,24 @@ const updateUser = (email, userData) => {
   });
 };
 
+const changePassword = (email, newPassword) => {
+  return new Promise((resolve, reject) => {
+    user
+      .update(
+        {
+          password: generateHash(newPassword),
+        },
+        { where: { lookupValue: generateHash(email) } }
+      )
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
 const authenticateUser = (email, password) => {
   const emailHashed = generateHash(email);
   const passwordHashed = generateHash(password);
@@ -115,4 +133,5 @@ const formatUserOutput = ({ email, displayName, firstName, lastName }) => {
 
 exports.createNewUser = createNewUser;
 exports.updateUser = updateUser;
+exports.changePassword = changePassword;
 exports.authenticateUser = authenticateUser;
